@@ -2,6 +2,11 @@
 
 Sistem Informasi Manajemen Laboratorium (LIMS) adalah aplikasi berbasis web yang dibangun menggunakan Laravel untuk membantu mengelola inventaris, peminjaman, dan pemeliharaan barang di lingkungan laboratorium sekolah atau institusi.
 
+## Dibuat oleh:
+
+- **[@AlhikamWarsawa](https://github.com/AlhikamWarsawa)** - Backend Developer 💻
+- **[@Thoifur2007](https://github.com/Thoifur2007)** - Frontend Developer 🎨
+
 ## Fitur Utama
 
 - **Manajemen Pengguna:** Mengelola akun untuk berbagai peran (misalnya: Admin, Guru, Siswa).
