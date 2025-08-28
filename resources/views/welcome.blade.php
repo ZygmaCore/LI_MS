@@ -16,7 +16,7 @@
                 transform: translateY(0);
             }
         }
-        
+
         @keyframes fadeInLeft {
             from {
                 opacity: 0;
@@ -27,7 +27,7 @@
                 transform: translateX(0);
             }
         }
-        
+
         @keyframes fadeInRight {
             from {
                 opacity: 0;
@@ -38,7 +38,7 @@
                 transform: translateX(0);
             }
         }
-        
+
         @keyframes pulse {
             0%, 100% {
                 transform: scale(1);
@@ -47,7 +47,7 @@
                 transform: scale(1.05);
             }
         }
-        
+
         @keyframes float {
             0%, 100% {
                 transform: translateY(0px);
@@ -56,7 +56,7 @@
                 transform: translateY(-10px);
             }
         }
-        
+
         @keyframes gradientShift {
             0% {
                 background-position: 0% 50%;
@@ -68,59 +68,59 @@
                 background-position: 0% 50%;
             }
         }
-        
+
         .animate-fadeInUp {
             animation: fadeInUp 0.8s ease-out forwards;
         }
-        
+
         .animate-fadeInLeft {
             animation: fadeInLeft 0.8s ease-out forwards;
         }
-        
+
         .animate-fadeInRight {
             animation: fadeInRight 0.8s ease-out forwards;
         }
-        
+
         .animate-pulse-custom {
             animation: pulse 2s infinite;
         }
-        
+
         .animate-float {
             animation: float 3s ease-in-out infinite;
         }
-        
+
         .gradient-animate {
             background: linear-gradient(-45deg, #3b82f6, #1d4ed8, #2563eb, #1e40af);
             background-size: 400% 400%;
             animation: gradientShift 4s ease infinite;
         }
-        
+
         .glass-effect {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .card-hover {
             transition: all 0.3s ease;
         }
-        
+
         .card-hover:hover {
             transform: translateY(-10px) scale(1.02);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
-        
+
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
         .delay-400 { animation-delay: 0.4s; }
         .delay-500 { animation-delay: 0.5s; }
-        
+
         .btn-glow {
             position: relative;
             overflow: hidden;
         }
-        
+
         .btn-glow::before {
             content: '';
             position: absolute;
@@ -131,11 +131,11 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             transition: left 0.5s;
         }
-        
+
         .btn-glow:hover::before {
             left: 100%;
         }
-        
+
         .particle {
             position: absolute;
             background: rgba(255, 255, 255, 0.3);
@@ -143,11 +143,11 @@
             pointer-events: none;
             animation: float 4s ease-in-out infinite;
         }
-        
+
         .navbar-scroll {
             transition: all 0.3s ease;
         }
-        
+
         .navbar-scrolled {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -164,16 +164,16 @@
                 <span class="animate-float inline-block">🔬</span> Inventaris Lab
             </h1>
         </div>
-        <div class="animate-fadeInRight">
-            <a href="#" 
-               class="btn-glow px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 mr-2 transform hover:scale-105">
-               Login
-            </a>
-            <a href="#" 
-               class="btn-glow px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105">
-               Register
-            </a>
-        </div>
+{{--        <div class="animate-fadeInRight">--}}
+{{--            <a href="{{ route('login') }}"--}}
+{{--               class="btn-glow px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 mr-2 transform hover:scale-105">--}}
+{{--               Login--}}
+{{--            </a>--}}
+{{--            <a href="{{ route('register') }}"--}}
+{{--               class="btn-glow px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105">--}}
+{{--               Register--}}
+{{--            </a>--}}
+{{--        </div>--}}
     </nav>
 
     <!-- Hero Section dengan efek gradien animasi -->
@@ -184,7 +184,7 @@
         <div class="particle w-1 h-1 top-3/4 left-1/3 delay-300"></div>
         <div class="particle w-2 h-2 top-1/2 right-1/3 delay-400"></div>
         <div class="particle w-1 h-1 top-1/5 left-3/4 delay-500"></div>
-        
+
         <div class="container mx-auto px-6 relative z-10">
             <div class="animate-fadeInUp delay-100">
                 <h2 class="text-6xl md:text-7xl font-extrabold mb-6 leading-tight">
@@ -194,20 +194,33 @@
                     </span>
                 </h2>
             </div>
-            
+
             <div class="animate-fadeInUp delay-200">
                 <p class="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
                     Mengelola barang, peminjaman, dan maintenance dengan lebih mudah dan efisien
                 </p>
             </div>
-            
+
             <div class="animate-fadeInUp delay-300">
-                <a href="/register" 
+                @guest
+                <div class="flex items-center justify-center gap-4">
+                    <a href="{{ route('register') }}"
+                       class="btn-glow inline-block bg-white text-blue-700 px-8 py-4 rounded-full shadow-2xl hover:bg-gray-100 font-bold text-lg transform hover:scale-110 transition-all duration-300">
+                       🚀 Daftar Sekarang
+                    </a>
+                    <a href="{{ route('login') }}"
+                       class="inline-block bg-transparent border border-white/70 text-white px-8 py-4 rounded-full shadow hover:bg-white/10 font-bold text-lg transform hover:scale-110 transition-all duration-300">
+                       🔑 Login
+                    </a>
+                </div>
+                @else
+                <a href="{{ route('dashboard') }}"
                    class="btn-glow inline-block bg-white text-blue-700 px-8 py-4 rounded-full shadow-2xl hover:bg-gray-100 font-bold text-lg transform hover:scale-110 transition-all duration-300">
-                   🚀 Mulai Sekarang
+                   🏠 Ke Dashboard
                 </a>
+                @endguest
             </div>
-            
+
             <!-- Floating icons -->
             <div class="absolute top-20 left-10 animate-float delay-100">
                 <div class="text-4xl opacity-20">📊</div>
@@ -229,7 +242,7 @@
                 Solusi lengkap untuk mengelola inventaris laboratorium modern
             </p>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Card 1 -->
             <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100 animate-fadeInUp delay-100">
@@ -301,7 +314,7 @@
     <script>
         // Update tahun otomatis
         document.getElementById('currentYear').textContent = new Date().getFullYear();
-        
+
         // Efek navbar saat scroll
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar-scroll');
@@ -311,13 +324,13 @@
                 navbar.classList.remove('navbar-scrolled');
             }
         });
-        
+
         // Intersection Observer untuk animasi saat scroll
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
-        
+
         const observer = new IntersectionObserver(function(entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -325,13 +338,13 @@
                 }
             });
         }, observerOptions);
-        
+
         // Observe semua elemen yang memiliki class untuk animasi
         document.addEventListener('DOMContentLoaded', function() {
             const animatedElements = document.querySelectorAll('.card-hover, .animate-fadeInUp');
             animatedElements.forEach(el => observer.observe(el));
         });
-        
+
         // Smooth scrolling untuk anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

@@ -177,7 +177,7 @@
 
     <!-- Back to Home Button -->
     <div class="absolute top-6 left-6 z-50 animate-fadeInLeft">
-        <a href="#" class="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors">
+        <a href="{{ route('home') }}" class="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
@@ -201,7 +201,8 @@
 
             <!-- Form Container -->
             <div class="glass-effect rounded-2xl shadow-2xl p-8 animate-slideIn delay-200">
-                <form class="space-y-6" id="registerForm">
+                <form class="space-y-6" id="registerForm" method="POST" action="{{ route('register.store') }}">
+                    @csrf
 
                     <!-- Nama Lengkap -->
                     <div class="animate-fadeInUp delay-300">
@@ -210,7 +211,7 @@
                         </label>
                         <input type="text"
                                id="name"
-                               name="name"
+                               name="nama"
                                required
                                class="input-glow w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                placeholder="Masukkan nama lengkap Anda">
@@ -291,15 +292,15 @@
                             👥 Daftar Sebagai
                         </label>
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="role-card bg-white p-4 rounded-xl border-2 border-gray-200 text-center" onclick="selectRole('siswa')">
+                            <div class="role-card bg-white p-4 rounded-xl border-2 border-gray-200 text-center" onclick="selectRole(event, 'siswa')">
                                 <div class="text-2xl mb-2">🎓</div>
                                 <div class="text-sm font-medium text-gray-700">Siswa</div>
                             </div>
-                            <div class="role-card bg-white p-4 rounded-xl border-2 border-gray-200 text-center" onclick="selectRole('guru')">
+                            <div class="role-card bg-white p-4 rounded-xl border-2 border-gray-200 text-center" onclick="selectRole(event, 'guru')">
                                 <div class="text-2xl mb-2">👨‍🏫</div>
                                 <div class="text-sm font-medium text-gray-700">Guru</div>
                             </div>
-                            <div class="role-card bg-white p-4 rounded-xl border-2 border-gray-200 text-center" onclick="selectRole('admin')">
+                            <div class="role-card bg-white p-4 rounded-xl border-2 border-gray-200 text-center" onclick="selectRole(event, 'admin')">
                                 <div class="text-2xl mb-2">⚙️</div>
                                 <div class="text-sm font-medium text-gray-700">Admin</div>
                             </div>
@@ -321,7 +322,7 @@
                     <div class="text-center animate-fadeInUp" style="animation-delay: 0.9s;">
                         <p class="text-sm text-gray-600">
                             Sudah punya akun?
-                            <a href="/login" class="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
+                            <a href="{{ route('login') }}" class="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
                                 Login di sini
                             </a>
                         </p>
@@ -373,7 +374,7 @@
         }
 
         // Role selection
-        function selectRole(role) {
+        function selectRole(event, role) {
             // Remove previous selection
             document.querySelectorAll('.role-card').forEach(card => {
                 card.classList.remove('selected');
@@ -477,29 +478,11 @@
         document.getElementById('email').addEventListener('input', validateForm);
 
         // Form submission
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Add loading state
+        document.getElementById('registerForm').addEventListener('submit', function() {
+            // Optional: show loading state but allow normal form submission
             const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '🔄 Memproses...';
             submitBtn.disabled = true;
-
-            // Simulate form submission
-            setTimeout(() => {
-                // Redirect to verification page
-                alert('Akun berhasil dibuat! Mengarahkan ke halaman verifikasi...');
-                // In real Laravel app, this would be handled by the backend
-                // window.location.href = "{{ route('verification.notice') }}";
-
-                // For demo, we'll simulate redirect
-                window.location.href = '#verification'; // This should be the verification page URL
-
-                // Reset button (for demo if not redirecting)
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
         });
     </script>
 

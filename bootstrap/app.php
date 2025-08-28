@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // alias middleware (kayak $routeMiddleware di Kernel)
         $middleware->alias([
             'role' => RoleMiddleware::class,
+            'nocache' => \App\Http\Middleware\NoCache::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
