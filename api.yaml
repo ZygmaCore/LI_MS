@@ -309,7 +309,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
     post:
       tags: [Barangs]
-      summary: Create barang
+      summary: Create barangs
       description: Requires role **admin** or **guru**.
       x-roles: ["admin","guru"]
       requestBody:
@@ -329,7 +329,7 @@ paths:
   /barangs/{id}:
     get:
       tags: [Barangs]
-      summary: Get barang by ID
+      summary: Get barangs by ID
       description: Requires role **admin** or **guru**. Returns item with `lab`.
       x-roles: ["admin","guru"]
       parameters:
@@ -348,7 +348,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
     patch:
       tags: [Barangs]
-      summary: Update barang (partial)
+      summary: Update barangs (partial)
       description: Requires role **admin** or **guru**.
       x-roles: ["admin","guru"]
       parameters:
@@ -373,7 +373,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
     put:
       tags: [Barangs]
-      summary: Update barang (replace semantics)
+      summary: Update barangs (replace semantics)
       description: Requires role **admin** or **guru**.
       x-roles: ["admin","guru"]
       parameters:
@@ -398,7 +398,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
     delete:
       tags: [Barangs]
-      summary: Delete barang
+      summary: Delete barangs
       description: Requires role **admin** or **guru**.
       x-roles: ["admin","guru"]
       parameters:
@@ -416,7 +416,7 @@ paths:
     get:
       tags: [Maintenances]
       summary: List maintenance records
-      description: Requires role **admin** or **guru**. Returns records with `barang`.
+      description: Requires role **admin** or **guru**. Returns records with `barangs`.
       x-roles: ["admin","guru"]
       responses:
         "200":
@@ -537,7 +537,7 @@ paths:
     get:
       tags: [Peminjamans]
       summary: List peminjaman
-      description: Requires role **admin** or **guru**. Returns records with `user` and `barang`.
+      description: Requires role **admin** or **guru**. Returns records with `user` and `barangs`.
       x-roles: ["admin","guru"]
       responses:
         "200":
@@ -552,7 +552,7 @@ paths:
     post:
       tags: [Peminjamans]
       summary: Create peminjaman
-      description: Requires role **admin** or **guru**. Decrements `barang.jumlah_total` if stock available.
+      description: Requires role **admin** or **guru**. Decrements `barangs.jumlah_total` if stock available.
       x-roles: ["admin","guru"]
       requestBody:
         required: true
@@ -581,7 +581,7 @@ paths:
               schema: { $ref: "#/components/schemas/MessageResponse" }
               examples:
                 insufficient:
-                  value: { message: "Stok barang tidak mencukupi" }
+                  value: { message: "Stok barangs tidak mencukupi" }
         "422": { $ref: "#/components/responses/ValidationError" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
@@ -693,7 +693,7 @@ paths:
   /siswa/pinjam/{id}:
     post:
       tags: [Siswa]
-      summary: Student borrows a barang
+      summary: Student borrows a barangs
       description: Requires role **siswa**. Decrements stock if available, creates a peminjaman with status `dipinjam` and `tanggal_pinjam=now()`.
       x-roles: ["siswa"]
       parameters:
@@ -725,7 +725,7 @@ paths:
               schema: { $ref: "#/components/schemas/MessageResponse" }
               examples:
                 insufficient:
-                  value: { message: "Stok barang tidak mencukupi" }
+                  value: { message: "Stok barangs tidak mencukupi" }
         "422": { $ref: "#/components/responses/ValidationError" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
@@ -734,7 +734,7 @@ paths:
     get:
       tags: [Siswa]
       summary: Student loan history
-      description: Requires role **siswa**. Returns peminjaman with `barang` for the authenticated student.
+      description: Requires role **siswa**. Returns peminjaman with `barangs` for the authenticated student.
       x-roles: ["siswa"]
       responses:
         "200":

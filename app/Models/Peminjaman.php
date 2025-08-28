@@ -24,7 +24,7 @@ class Peminjaman extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Relasi: peminjaman terkait 1 barang
+    // Relasi: peminjaman terkait 1 barangs
     public function barang()
     {
         return $this->belongsTo(Barang::class);

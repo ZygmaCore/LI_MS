@@ -8,16 +8,29 @@ use Illuminate\Http\Request;
 class LabController extends Controller
 {
     /**
-     * Tampilkan semua lab.
+     * List labs (HTML for browsers, JSON for API clients).
      */
-    public function index()
+    public function index(Request $request)
     {
-        $labs = Lab::with('barangs')->get();
-        return response()->json($labs);
+        $labs = Lab::orderByDesc('id')->get(); // or ->withCount('barangs') if you need counts
+
+        if ($request->wantsJson()) {
+            return response()->json($labs);
+        }
+
+        return view('labs.index', compact('labs'));
     }
 
     /**
-     * Simpan lab baru.
+     * Show create form (HTML).
+     */
+    public function create()
+    {
+        return view('labs.create');
+    }
+
+    /**
+     * Store a new lab.
      */
     public function store(Request $request)
     {
@@ -28,19 +41,23 @@ class LabController extends Controller
 
         $lab = Lab::create($validated);
 
-        return response()->json($lab, 201);
+        if ($request->wantsJson()) {
+            return response()->json($lab, 201);
+        }
+
+        return redirect()->route('labs.index')->with('success', 'Lab created.');
     }
 
     /**
-     * Tampilkan detail lab.
+     * Show edit form (HTML).
      */
-    public function show(Lab $lab)
+    public function edit(Lab $lab)
     {
-        return response()->json($lab->load('barangs'));
+        return view('labs.edit', compact('lab'));
     }
 
     /**
-     * Update data lab.
+     * Update an existing lab.
      */
     public function update(Request $request, Lab $lab)
     {
@@ -51,15 +68,40 @@ class LabController extends Controller
 
         $lab->update($validated);
 
-        return response()->json($lab);
+        if ($request->wantsJson()) {
+            return response()->json($lab);
+        }
+
+        return redirect()->route('labs.index')->with('success', 'Lab updated.');
     }
 
     /**
-     * Hapus lab.
+     * Delete a lab.
      */
-    public function destroy(Lab $lab)
+    public function destroy(Request $request, Lab $lab)
     {
         $lab->delete();
-        return response()->json(null, 204);
+
+        if ($request->wantsJson()) {
+            return response()->json(null, 204);
+        }
+
+        return redirect()->route('labs.index')->with('success', 'Lab deleted.');
+    }
+
+    /**
+     * Show lab detail.
+     * (No Blade view provided, so HTML requests go to the edit page.)
+     */
+    public function show(Request $request, Lab $lab)
+    {
+        $lab->load('barangs');
+
+        if ($request->wantsJson()) {
+            return response()->json($lab);
+        }
+
+        // Redirect to edit since you don’t have labs/show.blade.php
+        return redirect()->route('labs.edit', $lab);
     }
 }

@@ -32,13 +32,13 @@ class PeminjamanController extends Controller
             'status' => 'in:dipinjam,dikembalikan,rusak',
         ]);
 
-        // Validasi stok barang
+        // Validasi stok barangs
         $barang = Barang::findOrFail($validated['barang_id']);
         if ($barang->jumlah_total < $validated['jumlah']) {
-            return response()->json(['message' => 'Stok barang tidak mencukupi'], 400);
+            return response()->json(['message' => 'Stok barangs tidak mencukupi'], 400);
         }
 
-        // Kurangi stok barang
+        // Kurangi stok barangs
         $barang->decrement('jumlah_total', $validated['jumlah']);
 
         $peminjaman = Peminjaman::create($validated);
@@ -65,7 +65,7 @@ class PeminjamanController extends Controller
             'status' => 'in:dipinjam,dikembalikan,rusak',
         ]);
 
-        // Kalau status jadi dikembalikan → tambah stok barang
+        // Kalau status jadi dikembalikan → tambah stok barangs
         if (isset($validated['status']) && $validated['status'] === 'dikembalikan') {
             $peminjaman->barang->increment('jumlah_total', $peminjaman->jumlah);
         }
@@ -89,7 +89,7 @@ class PeminjamanController extends Controller
        ======================= */
 
     /**
-     * List barang untuk siswa (lihat stok tersedia).
+     * List barangs untuk siswa (lihat stok tersedia).
      */
     public function listBarang()
     {
@@ -98,7 +98,7 @@ class PeminjamanController extends Controller
     }
 
     /**
-     * Proses siswa meminjam barang.
+     * Proses siswa meminjam barangs.
      */
     public function pinjam(Request $request, $id)
     {
@@ -109,10 +109,10 @@ class PeminjamanController extends Controller
         $barang = Barang::findOrFail($id);
 
         if ($barang->jumlah_total < $validated['jumlah']) {
-            return response()->json(['message' => 'Stok barang tidak mencukupi'], 400);
+            return response()->json(['message' => 'Stok barangs tidak mencukupi'], 400);
         }
 
-        // Kurangi stok barang
+        // Kurangi stok barangs
         $barang->decrement('jumlah_total', $validated['jumlah']);
 
         $peminjaman = Peminjaman::create([

@@ -12,7 +12,7 @@
         <a href="{{ route('maintenances.index') }}" class="block px-3 py-2 rounded hover:bg-gray-100 text-gray-700">🛠️ Maintenance</a>
       @endif
       @if(Auth::user()->role === 'siswa')
-        <a href="{{ url('/siswa/barang') }}" class="block px-3 py-2 rounded hover:bg-gray-100 text-gray-700">📚 Daftar Barang</a>
+        <a href="{{ url('/siswa/barangs') }}" class="block px-3 py-2 rounded hover:bg-gray-100 text-gray-700">📚 Daftar Barang</a>
         <a href="{{ url('/siswa/riwayat') }}" class="block px-3 py-2 rounded hover:bg-gray-100 text-gray-700">🕓 Riwayat</a>
       @endif
     @endauth

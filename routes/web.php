@@ -97,7 +97,7 @@ Route::middleware(['auth','nocache'])->group(function () {
     Route::resource('maintenances', MaintenanceController::class)->middleware('role:admin,guru');
 
     // Siswa
-    Route::get('/siswa/barang', [PeminjamanController::class, 'listBarang'])->middleware('role:siswa');
+    Route::get('/siswa/barangs', [PeminjamanController::class, 'listBarang'])->middleware('role:siswa');
     Route::post('/siswa/pinjam/{id}', [PeminjamanController::class, 'pinjam'])->middleware('role:siswa');
     Route::get('/siswa/riwayat', [PeminjamanController::class, 'riwayat'])->middleware('role:siswa');
 });

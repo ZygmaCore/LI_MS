@@ -17,7 +17,7 @@ class Maintenance extends Model
         'catatan',
     ];
 
-    // Relasi: maintenance milik 1 barang
+    // Relasi: maintenance milik 1 barangs
     public function barang()
     {
         return $this->belongsTo(Barang::class);

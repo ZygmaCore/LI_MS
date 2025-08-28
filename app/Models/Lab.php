@@ -14,7 +14,7 @@ class Lab extends Model
         'lokasi',
     ];
 
-    // Relasi: 1 lab punya banyak barang
+    // Relasi: 1 lab punya banyak barangs
     public function barangs()
     {
         return $this->hasMany(Barang::class);

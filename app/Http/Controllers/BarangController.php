@@ -3,68 +3,77 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Lab;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
-    /**
-     * Tampilkan semua barang.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $barangs = Barang::with('lab')->get();
-        return response()->json($barangs);
+        $q = $request->query('q');
+        $query = Barang::with('lab')->latest();
+
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('nama_barang', 'like', "%{$q}%")
+                    ->orWhere('kode_barang', 'like', "%{$q}%");
+            });
+        }
+
+        $barangs = $query->paginate(10)->withQueryString();
+        return view('barangs.index', compact('barangs', 'q'));
     }
 
-    /**
-     * Simpan barang baru.
-     */
+    public function create()
+    {
+        $labs = Lab::select('id', 'nama_lab')->orderBy('nama_lab')->get();
+        return view('barangs.create', compact('labs'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'kode_barang' => 'required|string|max:100|unique:barangs,kode_barang',
+            'nama_barang'  => 'required|string|max:255',
+            'kode_barang'  => 'required|string|max:100|unique:barangs,kode_barang',
             'jumlah_total' => 'required|integer|min:0',
-            'lab_id' => 'required|exists:labs,id',
+            'lab_id'       => 'required|exists:labs,id',
         ]);
 
-        $barang = Barang::create($validated);
+        Barang::create($validated);
 
-        return response()->json($barang, 201);
+        return redirect()
+            ->route('barangs.index')
+            ->with('success', 'Barang created successfully.');
     }
 
-    /**
-     * Tampilkan detail barang.
-     */
-    public function show(Barang $barang)
+    public function edit(Barang $barang)
     {
-        return response()->json($barang->load('lab'));
+        $labs = Lab::select('id', 'nama_lab')->orderBy('nama_lab')->get();
+        return view('barangs.edit', compact('barang', 'labs'));
     }
 
-    /**
-     * Update data barang.
-     */
     public function update(Request $request, Barang $barang)
     {
         $validated = $request->validate([
-            'nama_barang' => 'sometimes|required|string|max:255',
-            'kode_barang' => 'sometimes|required|string|max:100|unique:barangs,kode_barang,' . $barang->id,
-            'jumlah_total' => 'sometimes|required|integer|min:0',
-            'lab_id' => 'sometimes|required|exists:labs,id',
+            'nama_barang'  => 'required|string|max:255',
+            'kode_barang'  => 'required|string|max:100|unique:barangs,kode_barang,' . $barang->id,
+            'jumlah_total' => 'required|integer|min:0',
+            'lab_id'       => 'required|exists:labs,id',
         ]);
 
         $barang->update($validated);
 
-        return response()->json($barang);
+        return redirect()
+            ->route('barangs.index')
+            ->with('success', 'Barang updated successfully.');
     }
 
-    /**
-     * Hapus barang.
-     */
     public function destroy(Barang $barang)
     {
         $barang->delete();
 
-        return response()->json(null, 204);
+        return redirect()
+            ->route('barangs.index')
+            ->with('success', 'Barang deleted successfully.');
     }
 }
