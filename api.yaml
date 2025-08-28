@@ -1,0 +1,1007 @@
+openapi: 3.0.3
+info:
+  title: Lab Inventory & Lending API
+  version: "1.0.0"
+  description: |
+    REST API for managing labs, items (barangs), maintenance, loans (peminjaman),
+    and users. Built around Laravel controllers and web routes protected by auth
+    and role-based middleware.
+
+    **Auth model**
+    - Endpoints require authentication (`auth` middleware).
+    - Roles (via `role:` middleware) control access:
+      - **admin**: full access to Users, Labs; also Barangs, Peminjamans, Maintenances.
+      - **guru**: access to Barangs, Peminjamans, Maintenances.
+      - **siswa**: access to the Student endpoints (`/siswa/...`).
+
+    **Security options**
+    - `cookieAuth` (Laravel session cookie) + XSRF header for unsafe methods.
+    - or `bearerAuth` (JWT/Token) if your project uses tokens.
+servers:
+  - url: http://localhost
+    description: Local development
+  - url: https://example.com
+    description: Production (replace with your domain)
+security:
+  # Either an authenticated session or a bearer token
+  - cookieAuth: []
+  - bearerAuth: []
+tags:
+  - name: Users
+  - name: Labs
+  - name: Barangs
+  - name: Peminjamans
+  - name: Maintenances
+  - name: Siswa
+paths:
+  /users:
+    get:
+      tags: [Users]
+      summary: List users
+      description: Requires role **admin**. Returns users with `peminjamans` relationship loaded.
+      x-roles: ["admin"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserWithPeminjamans"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [Users]
+      summary: Create user
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+            examples:
+              createExample:
+                value:
+                  nama: "Budi"
+                  email: "budi@example.com"
+                  password: "secret123"
+                  role: "siswa"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /users/{id}:
+    get:
+      tags: [Users]
+      summary: Get user by ID
+      description: Requires role **admin**. Returns user with `peminjamans`.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithPeminjamans"
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    patch:
+      tags: [Users]
+      summary: Update user (partial)
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    put:
+      tags: [Users]
+      summary: Update user (replace semantics)
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    delete:
+      tags: [Users]
+      summary: Delete user
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: No Content }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /labs:
+    get:
+      tags: [Labs]
+      summary: List labs
+      description: Requires role **admin**. Returns labs with `barangs`.
+      x-roles: ["admin"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/LabWithBarangs" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [Labs]
+      summary: Create lab
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LabCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Lab" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /labs/{id}:
+    get:
+      tags: [Labs]
+      summary: Get lab by ID
+      description: Requires role **admin**. Returns lab with `barangs`.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LabWithBarangs" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    patch:
+      tags: [Labs]
+      summary: Update lab (partial)
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LabUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Lab" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    put:
+      tags: [Labs]
+      summary: Update lab (replace semantics)
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LabUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Lab" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    delete:
+      tags: [Labs]
+      summary: Delete lab
+      description: Requires role **admin**.
+      x-roles: ["admin"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: No Content }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /barangs:
+    get:
+      tags: [Barangs]
+      summary: List barangs
+      description: Requires role **admin** or **guru**. Returns items with `lab`.
+      x-roles: ["admin","guru"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/BarangWithLab" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [Barangs]
+      summary: Create barang
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BarangCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Barang" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /barangs/{id}:
+    get:
+      tags: [Barangs]
+      summary: Get barang by ID
+      description: Requires role **admin** or **guru**. Returns item with `lab`.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BarangWithLab" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    patch:
+      tags: [Barangs]
+      summary: Update barang (partial)
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BarangUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Barang" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    put:
+      tags: [Barangs]
+      summary: Update barang (replace semantics)
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BarangUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Barang" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    delete:
+      tags: [Barangs]
+      summary: Delete barang
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: No Content }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /maintenances:
+    get:
+      tags: [Maintenances]
+      summary: List maintenance records
+      description: Requires role **admin** or **guru**. Returns records with `barang`.
+      x-roles: ["admin","guru"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/MaintenanceWithBarang" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [Maintenances]
+      summary: Create maintenance record
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Maintenance" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /maintenances/{id}:
+    get:
+      tags: [Maintenances]
+      summary: Get maintenance by ID
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceWithBarang" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    patch:
+      tags: [Maintenances]
+      summary: Update maintenance (partial)
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Maintenance" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    put:
+      tags: [Maintenances]
+      summary: Update maintenance (replace semantics)
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Maintenance" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    delete:
+      tags: [Maintenances]
+      summary: Delete maintenance
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: No Content }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /peminjamans:
+    get:
+      tags: [Peminjamans]
+      summary: List peminjaman
+      description: Requires role **admin** or **guru**. Returns records with `user` and `barang`.
+      x-roles: ["admin","guru"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/PeminjamanWithUserBarang" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [Peminjamans]
+      summary: Create peminjaman
+      description: Requires role **admin** or **guru**. Decrements `barang.jumlah_total` if stock available.
+      x-roles: ["admin","guru"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PeminjamanCreate" }
+            examples:
+              createExample:
+                value:
+                  user_id: 5
+                  barang_id: 12
+                  jumlah: 2
+                  tanggal_pinjam: "2025-08-28"
+                  tanggal_kembali: null
+                  status: "dipinjam"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Peminjaman" }
+        "400":
+          description: Stock not sufficient
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+              examples:
+                insufficient:
+                  value: { message: "Stok barang tidak mencukupi" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /peminjamans/{id}:
+    get:
+      tags: [Peminjamans]
+      summary: Get peminjaman by ID
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PeminjamanWithUserBarang" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    patch:
+      tags: [Peminjamans]
+      summary: Update peminjaman (partial)
+      description: |
+        Requires role **admin** or **guru**.
+        If status changed to `dikembalikan`, the related barang stock is incremented by `peminjaman.jumlah`.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PeminjamanUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Peminjaman" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    put:
+      tags: [Peminjamans]
+      summary: Update peminjaman (replace semantics)
+      description: Same behavior as PATCH.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PeminjamanUpdate" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Peminjaman" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    delete:
+      tags: [Peminjamans]
+      summary: Delete peminjaman
+      description: Requires role **admin** or **guru**.
+      x-roles: ["admin","guru"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: No Content }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /siswa/barang:
+    get:
+      tags: [Siswa]
+      summary: List available barangs for students
+      description: Requires role **siswa**. Returns id, name, code, and available stock (`jumlah_total`).
+      x-roles: ["siswa"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/BarangListItem" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /siswa/pinjam/{id}:
+    post:
+      tags: [Siswa]
+      summary: Student borrows a barang
+      description: Requires role **siswa**. Decrements stock if available, creates a peminjaman with status `dipinjam` and `tanggal_pinjam=now()`.
+      x-roles: ["siswa"]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jumlah]
+              properties:
+                jumlah:
+                  type: integer
+                  minimum: 1
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Peminjaman" }
+        "400":
+          description: Stock not sufficient
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+              examples:
+                insufficient:
+                  value: { message: "Stok barang tidak mencukupi" }
+        "422": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /siswa/riwayat:
+    get:
+      tags: [Siswa]
+      summary: Student loan history
+      description: Requires role **siswa**. Returns peminjaman with `barang` for the authenticated student.
+      x-roles: ["siswa"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/PeminjamanWithBarang" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: >
+        Laravel session cookie. For unsafe methods (POST/PUT/PATCH/DELETE) with session auth,
+        also send the `X-XSRF-TOKEN` header. Obtain the token from `/sanctum/csrf-cookie` if using Sanctum.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Unauthorized:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/MessageResponse" }
+          examples:
+            unauth:
+              value: { message: "Unauthenticated." }
+    Forbidden:
+      description: Forbidden (insufficient role)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/MessageResponse" }
+          examples:
+            forbidden:
+              value: { message: "This action is unauthorized." }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/MessageResponse" }
+          examples:
+            notfound:
+              value: { message: "Not Found" }
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { type: string, example: "The given data was invalid." }
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items: { type: string }
+  schemas:
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    # ==== Users ====
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        nama: { type: string }
+        email: { type: string, format: email }
+        role: { $ref: "#/components/schemas/UserRole" }
+        created_at: { type: string, format: date-time, nullable: true }
+        updated_at: { type: string, format: date-time, nullable: true }
+      required: [id, nama, email, role]
+    UserWithPeminjamans:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            peminjamans:
+              type: array
+              items: { $ref: "#/components/schemas/Peminjaman" }
+    UserCreate:
+      type: object
+      required: [nama, email, password, role]
+      properties:
+        nama: { type: string, maxLength: 255 }
+        email: { type: string, format: email, maxLength: 255 }
+        password: { type: string, minLength: 6, writeOnly: true }
+        role: { $ref: "#/components/schemas/UserRole" }
+    UserUpdate:
+      type: object
+      properties:
+        nama: { type: string, maxLength: 255 }
+        email: { type: string, format: email, maxLength: 255 }
+        password: { type: string, minLength: 6, writeOnly: true, nullable: true }
+        role: { $ref: "#/components/schemas/UserRole" }
+    UserRole:
+      type: string
+      enum: [admin, guru, siswa]
+
+    # ==== Labs ====
+    Lab:
+      type: object
+      properties:
+        id: { type: integer }
+        nama_lab: { type: string }
+        lokasi: { type: string }
+        created_at: { type: string, format: date-time, nullable: true }
+        updated_at: { type: string, format: date-time, nullable: true }
+      required: [id, nama_lab, lokasi]
+    LabWithBarangs:
+      allOf:
+        - $ref: "#/components/schemas/Lab"
+        - type: object
+          properties:
+            barangs:
+              type: array
+              items: { $ref: "#/components/schemas/Barang" }
+    LabCreate:
+      type: object
+      required: [nama_lab, lokasi]
+      properties:
+        nama_lab: { type: string, maxLength: 255 }
+        lokasi: { type: string, maxLength: 255 }
+    LabUpdate:
+      type: object
+      properties:
+        nama_lab: { type: string, maxLength: 255 }
+        lokasi: { type: string, maxLength: 255 }
+
+    # ==== Barangs ====
+    Barang:
+      type: object
+      properties:
+        id: { type: integer }
+        nama_barang: { type: string }
+        kode_barang: { type: string }
+        jumlah_total: { type: integer, minimum: 0 }
+        lab_id: { type: integer }
+        created_at: { type: string, format: date-time, nullable: true }
+        updated_at: { type: string, format: date-time, nullable: true }
+      required: [id, nama_barang, kode_barang, jumlah_total, lab_id]
+    BarangWithLab:
+      allOf:
+        - $ref: "#/components/schemas/Barang"
+        - type: object
+          properties:
+            lab: { $ref: "#/components/schemas/Lab" }
+    BarangCreate:
+      type: object
+      required: [nama_barang, kode_barang, jumlah_total, lab_id]
+      properties:
+        nama_barang: { type: string, maxLength: 255 }
+        kode_barang: { type: string, maxLength: 100 }
+        jumlah_total: { type: integer, minimum: 0 }
+        lab_id: { type: integer }
+    BarangUpdate:
+      type: object
+      properties:
+        nama_barang: { type: string, maxLength: 255 }
+        kode_barang: { type: string, maxLength: 100 }
+        jumlah_total: { type: integer, minimum: 0 }
+        lab_id: { type: integer }
+    BarangListItem:
+      type: object
+      properties:
+        id: { type: integer }
+        nama_barang: { type: string }
+        kode_barang: { type: string }
+        jumlah_total: { type: integer, minimum: 0 }
+
+    # ==== Maintenances ====
+    Maintenance:
+      type: object
+      properties:
+        id: { type: integer }
+        barang_id: { type: integer }
+        deskripsi_kerusakan: { type: string }
+        tanggal_maintenance: { type: string, format: date }
+        status:
+          type: string
+          enum: [sedang_diperbaiki, selesai]
+        catatan: { type: string, nullable: true }
+        created_at: { type: string, format: date-time, nullable: true }
+        updated_at: { type: string, format: date-time, nullable: true }
+      required: [id, barang_id, deskripsi_kerusakan, tanggal_maintenance, status]
+    MaintenanceWithBarang:
+      allOf:
+        - $ref: "#/components/schemas/Maintenance"
+        - type: object
+          properties:
+            barang: { $ref: "#/components/schemas/Barang" }
+    MaintenanceCreate:
+      type: object
+      required: [barang_id, deskripsi_kerusakan, tanggal_maintenance, status]
+      properties:
+        barang_id: { type: integer }
+        deskripsi_kerusakan: { type: string }
+        tanggal_maintenance: { type: string, format: date }
+        status:
+          type: string
+          enum: [sedang_diperbaiki, selesai]
+        catatan: { type: string, nullable: true }
+    MaintenanceUpdate:
+      type: object
+      properties:
+        barang_id: { type: integer }
+        deskripsi_kerusakan: { type: string }
+        tanggal_maintenance: { type: string, format: date }
+        status:
+          type: string
+          enum: [sedang_diperbaiki, selesai]
+        catatan: { type: string, nullable: true }
+
+    # ==== Peminjamans ====
+    Peminjaman:
+      type: object
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        barang_id: { type: integer }
+        jumlah: { type: integer, minimum: 1 }
+        tanggal_pinjam: { type: string, format: date }
+        tanggal_kembali: { type: string, format: date, nullable: true }
+        status:
+          type: string
+          enum: [dipinjam, dikembalikan, rusak]
+        created_at: { type: string, format: date-time, nullable: true }
+        updated_at: { type: string, format: date-time, nullable: true }
+      required: [id, user_id, barang_id, jumlah, tanggal_pinjam, status]
+    PeminjamanWithUserBarang:
+      allOf:
+        - $ref: "#/components/schemas/Peminjaman"
+        - type: object
+          properties:
+            user: { $ref: "#/components/schemas/User" }
+            barang: { $ref: "#/components/schemas/Barang" }
+    PeminjamanWithBarang:
+      allOf:
+        - $ref: "#/components/schemas/Peminjaman"
+        - type: object
+          properties:
+            barang: { $ref: "#/components/schemas/Barang" }
+    PeminjamanCreate:
+      type: object
+      required: [user_id, barang_id, jumlah, tanggal_pinjam]
+      properties:
+        user_id: { type: integer }
+        barang_id: { type: integer }
+        jumlah: { type: integer, minimum: 1 }
+        tanggal_pinjam: { type: string, format: date }
+        tanggal_kembali: { type: string, format: date, nullable: true }
+        status:
+          type: string
+          enum: [dipinjam, dikembalikan, rusak]
+    PeminjamanUpdate:
+      type: object
+      properties:
+        jumlah: { type: integer, minimum: 1 }
+        tanggal_kembali: { type: string, format: date, nullable: true }
+        status:
+          type: string
+          enum: [dipinjam, dikembalikan, rusak]

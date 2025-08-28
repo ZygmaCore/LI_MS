@@ -16,7 +16,7 @@
                 transform: translateY(0);
             }
         }
-        
+
         @keyframes fadeInLeft {
             from {
                 opacity: 0;
@@ -27,7 +27,7 @@
                 transform: translateX(0);
             }
         }
-        
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -38,7 +38,7 @@
                 transform: scale(1);
             }
         }
-        
+
         @keyframes float {
             0%, 100% {
                 transform: translateY(0px);
@@ -47,7 +47,7 @@
                 transform: translateY(-10px);
             }
         }
-        
+
         @keyframes gradientShift {
             0% {
                 background-position: 0% 50%;
@@ -59,44 +59,44 @@
                 background-position: 0% 50%;
             }
         }
-        
+
         .animate-fadeInUp {
             animation: fadeInUp 0.8s ease-out forwards;
         }
-        
+
         .animate-fadeInLeft {
             animation: fadeInLeft 0.8s ease-out forwards;
         }
-        
+
         .animate-slideIn {
             animation: slideIn 0.6s ease-out forwards;
         }
-        
+
         .animate-float {
             animation: float 3s ease-in-out infinite;
         }
-        
+
         .gradient-animate {
             background: linear-gradient(-45deg, #3b82f6, #1d4ed8, #2563eb, #1e40af);
             background-size: 400% 400%;
             animation: gradientShift 4s ease infinite;
         }
-        
+
         .input-glow {
             transition: all 0.3s ease;
         }
-        
+
         .input-glow:focus {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
         }
-        
+
         .btn-glow {
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .btn-glow::before {
             content: '';
             position: absolute;
@@ -107,22 +107,22 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             transition: left 0.5s;
         }
-        
+
         .btn-glow:hover::before {
             left: 100%;
         }
-        
+
         .btn-glow:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        
+
         .glass-effect {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        
+
         .particle {
             position: absolute;
             background: rgba(255, 255, 255, 0.3);
@@ -130,36 +130,36 @@
             pointer-events: none;
             animation: float 4s ease-in-out infinite;
         }
-        
+
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
         .delay-400 { animation-delay: 0.4s; }
         .delay-500 { animation-delay: 0.5s; }
         .delay-600 { animation-delay: 0.6s; }
-        
+
         .role-card {
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        
+
         .role-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
-        
+
         .role-card.selected {
             border: 2px solid #3b82f6;
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1));
             transform: scale(1.02);
         }
-        
+
         .password-strength {
             height: 4px;
             border-radius: 2px;
             transition: all 0.3s ease;
         }
-        
+
         .strength-weak { background: #ef4444; width: 25%; }
         .strength-fair { background: #f59e0b; width: 50%; }
         .strength-good { background: #10b981; width: 75%; }
@@ -187,7 +187,7 @@
 
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
-            
+
             <!-- Header -->
             <div class="text-center animate-fadeInUp">
                 <div class="animate-float">
@@ -202,15 +202,15 @@
             <!-- Form Container -->
             <div class="glass-effect rounded-2xl shadow-2xl p-8 animate-slideIn delay-200">
                 <form class="space-y-6" id="registerForm">
-                    
+
                     <!-- Nama Lengkap -->
                     <div class="animate-fadeInUp delay-300">
                         <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
                             👤 Nama Lengkap
                         </label>
-                        <input type="text" 
-                               id="name" 
-                               name="name" 
+                        <input type="text"
+                               id="name"
+                               name="name"
                                required
                                class="input-glow w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                placeholder="Masukkan nama lengkap Anda">
@@ -221,9 +221,9 @@
                         <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
                             📧 Email
                         </label>
-                        <input type="email" 
-                               id="email" 
-                               name="email" 
+                        <input type="email"
+                               id="email"
+                               name="email"
                                required
                                class="input-glow w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                placeholder="nama@email.com">
@@ -235,13 +235,13 @@
                             🔒 Password
                         </label>
                         <div class="relative">
-                            <input type="password" 
-                                   id="password" 
-                                   name="password" 
+                            <input type="password"
+                                   id="password"
+                                   name="password"
                                    required
                                    class="input-glow w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                    placeholder="Buat password yang kuat">
-                            <button type="button" 
+                            <button type="button"
                                     onclick="togglePassword('password')"
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
                                 <svg id="eye-password" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,13 +265,13 @@
                             🔐 Konfirmasi Password
                         </label>
                         <div class="relative">
-                            <input type="password" 
-                                   id="password_confirmation" 
-                                   name="password_confirmation" 
+                            <input type="password"
+                                   id="password_confirmation"
+                                   name="password_confirmation"
                                    required
                                    class="input-glow w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                                    placeholder="Ulangi password Anda">
-                            <button type="button" 
+                            <button type="button"
                                     onclick="togglePassword('password_confirmation')"
                                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
                                 <svg id="eye-confirmation" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,7 +309,7 @@
 
                     <!-- Submit Button -->
                     <div class="animate-fadeInUp" style="animation-delay: 0.8s;">
-                        <button type="submit" 
+                        <button type="submit"
                                 class="btn-glow w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 id="submitBtn"
                                 disabled>
@@ -357,7 +357,7 @@
         function togglePassword(fieldId) {
             const field = document.getElementById(fieldId);
             const eyeIcon = document.getElementById(`eye-${fieldId.replace('_', '-')}`);
-            
+
             if (field.type === 'password') {
                 field.type = 'text';
                 eyeIcon.innerHTML = `
@@ -378,14 +378,14 @@
             document.querySelectorAll('.role-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            
+
             // Add selection to clicked card
             event.target.closest('.role-card').classList.add('selected');
-            
+
             // Update hidden input
             document.getElementById('role').value = role;
             selectedRole = role;
-            
+
             // Check form validation
             validateForm();
         }
@@ -395,18 +395,18 @@
             const password = this.value;
             const strengthBar = document.getElementById('passwordStrength');
             const strengthText = document.getElementById('strengthText');
-            
+
             let strength = 0;
             let text = '';
-            
+
             if (password.length >= 8) strength++;
             if (password.match(/[a-z]/)) strength++;
             if (password.match(/[A-Z]/)) strength++;
             if (password.match(/[0-9]/)) strength++;
             if (password.match(/[^a-zA-Z0-9]/)) strength++;
-            
+
             strengthBar.className = 'password-strength';
-            
+
             switch(strength) {
                 case 0:
                 case 1:
@@ -427,7 +427,7 @@
                     text = 'Password sangat kuat!';
                     break;
             }
-            
+
             strengthText.textContent = text;
             validateForm();
         });
@@ -437,7 +437,7 @@
             const password = document.getElementById('password').value;
             const confirmation = this.value;
             const matchDiv = document.getElementById('passwordMatch');
-            
+
             if (confirmation && password !== confirmation) {
                 matchDiv.classList.remove('hidden');
                 this.classList.add('border-red-300');
@@ -445,7 +445,7 @@
                 matchDiv.classList.add('hidden');
                 this.classList.remove('border-red-300');
             }
-            
+
             validateForm();
         });
 
@@ -456,15 +456,15 @@
             const password = document.getElementById('password').value;
             const confirmation = document.getElementById('password_confirmation').value;
             const submitBtn = document.getElementById('submitBtn');
-            
-            const isValid = name && 
-                           email && 
-                           password.length >= 8 && 
-                           password === confirmation && 
+
+            const isValid = name &&
+                           email &&
+                           password.length >= 8 &&
+                           password === confirmation &&
                            selectedRole;
-            
+
             submitBtn.disabled = !isValid;
-            
+
             if (isValid) {
                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             } else {
@@ -479,23 +479,23 @@
         // Form submission
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             // Add loading state
             const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '🔄 Memproses...';
             submitBtn.disabled = true;
-            
+
             // Simulate form submission
             setTimeout(() => {
                 // Redirect to verification page
                 alert('Akun berhasil dibuat! Mengarahkan ke halaman verifikasi...');
                 // In real Laravel app, this would be handled by the backend
                 // window.location.href = "{{ route('verification.notice') }}";
-                
+
                 // For demo, we'll simulate redirect
                 window.location.href = '#verification'; // This should be the verification page URL
-                
+
                 // Reset button (for demo if not redirecting)
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
