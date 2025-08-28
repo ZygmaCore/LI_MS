@@ -2,63 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lab;
 use Illuminate\Http\Request;
 
 class LabController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan semua lab.
      */
     public function index()
     {
-        //
+        $labs = Lab::with('barangs')->get();
+        return response()->json($labs);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Simpan lab baru.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama_lab' => 'required|string|max:255',
+            'lokasi'   => 'required|string|max:255',
+        ]);
+
+        $lab = Lab::create($validated);
+
+        return response()->json($lab, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Tampilkan detail lab.
      */
-    public function show(string $id)
+    public function show(Lab $lab)
     {
-        //
+        return response()->json($lab->load('barangs'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update data lab.
      */
-    public function edit(string $id)
+    public function update(Request $request, Lab $lab)
     {
-        //
+        $validated = $request->validate([
+            'nama_lab' => 'sometimes|required|string|max:255',
+            'lokasi'   => 'sometimes|required|string|max:255',
+        ]);
+
+        $lab->update($validated);
+
+        return response()->json($lab);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Hapus lab.
      */
-    public function update(Request $request, string $id)
+    public function destroy(Lab $lab)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $lab->delete();
+        return response()->json(null, 204);
     }
 }

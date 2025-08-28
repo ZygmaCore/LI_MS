@@ -2,63 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan semua barang.
      */
     public function index()
     {
-        //
+        $barangs = Barang::with('lab')->get();
+        return response()->json($barangs);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Simpan barang baru.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kode_barang' => 'required|string|max:100|unique:barangs,kode_barang',
+            'jumlah_total' => 'required|integer|min:0',
+            'lab_id' => 'required|exists:labs,id',
+        ]);
+
+        $barang = Barang::create($validated);
+
+        return response()->json($barang, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Tampilkan detail barang.
      */
-    public function show(string $id)
+    public function show(Barang $barang)
     {
-        //
+        return response()->json($barang->load('lab'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update data barang.
      */
-    public function edit(string $id)
+    public function update(Request $request, Barang $barang)
     {
-        //
+        $validated = $request->validate([
+            'nama_barang' => 'sometimes|required|string|max:255',
+            'kode_barang' => 'sometimes|required|string|max:100|unique:barangs,kode_barang,' . $barang->id,
+            'jumlah_total' => 'sometimes|required|integer|min:0',
+            'lab_id' => 'sometimes|required|exists:labs,id',
+        ]);
+
+        $barang->update($validated);
+
+        return response()->json($barang);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Hapus barang.
      */
-    public function update(Request $request, string $id)
+    public function destroy(Barang $barang)
     {
-        //
-    }
+        $barang->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(null, 204);
     }
 }

@@ -2,63 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan semua user.
      */
     public function index()
     {
-        //
+        $users = User::with('peminjamans')->get();
+        return response()->json($users);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Simpan user baru.
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role' => 'required|in:admin,guru,siswa',
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        $user = User::create($validated);
+
+        return response()->json($user, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Tampilkan detail user.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        return response()->json($user->load('peminjamans'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update data user.
      */
-    public function edit(string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6',
+            'role' => 'sometimes|required|in:admin,guru,siswa',
+        ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']); // biar gak overwrite password lama dengan null
+        }
+
+        $user->update($validated);
+
+        return response()->json($user);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Hapus user.
      */
-    public function update(Request $request, string $id)
+    public function destroy(User $user)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $user->delete();
+        return response()->json(null, 204);
     }
 }
