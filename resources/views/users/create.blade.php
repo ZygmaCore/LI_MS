@@ -10,27 +10,27 @@
 
         <div>
             <label class="block">Nama</label>
-            <input type="text" name="nama" value="{{ old('nama') }}" 
+            <input type="text" name="nama" value="{{ old('nama') }}"
                    class="w-full border rounded p-2" required>
             @error('nama') <div class="text-red-600">{{ $message }}</div> @enderror
         </div>
 
         <div>
             <label class="block">Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" 
+            <input type="email" name="email" value="{{ old('email') }}"
                    class="w-full border rounded p-2" required>
             @error('email') <div class="text-red-600">{{ $message }}</div> @enderror
         </div>
 
         <div>
             <label class="block">Password</label>
-            <input type="password" name="password" class="w-full border rounded p-2" required>
+            <input type="text" name="password" class="w-full border rounded p-2" required>
             @error('password') <div class="text-red-600">{{ $message }}</div> @enderror
         </div>
 
         <div>
             <label class="block">Konfirmasi Password</label>
-            <input type="password" name="password_confirmation" class="w-full border rounded p-2" required>
+            <input type="text" name="password_confirmation" class="w-full border rounded p-2" required>
         </div>
 
         <div>

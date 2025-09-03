@@ -15,7 +15,7 @@
             transform: translateY(0);
         }
     }
-    
+
     @keyframes slideIn {
         from {
             opacity: 0;
@@ -26,19 +26,19 @@
             transform: scale(1);
         }
     }
-    
+
     .animate-fadeInUp {
         animation: fadeInUp 0.8s ease-out forwards;
     }
-    
+
     .animate-slideIn {
         animation: slideIn 0.6s ease-out forwards;
     }
-    
+
     .input-glow {
         transition: all 0.3s ease;
     }
-    
+
     .input-glow:focus {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
@@ -46,13 +46,13 @@
         outline: none;
         ring: 2px solid #3b82f6;
     }
-    
+
     .btn-glow {
         position: relative;
         overflow: hidden;
         transition: all 0.3s ease;
     }
-    
+
     .btn-glow::before {
         content: '';
         position: absolute;
@@ -63,16 +63,16 @@
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
         transition: left 0.5s;
     }
-    
+
     .btn-glow:hover::before {
         left: 100%;
     }
-    
+
     .btn-glow:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
-    
+
     .checkbox-custom {
         appearance: none;
         width: 1.2rem;
@@ -83,12 +83,12 @@
         cursor: pointer;
         transition: all 0.3s ease;
     }
-    
+
     .checkbox-custom:checked {
         background-color: #3b82f6;
         border-color: #3b82f6;
     }
-    
+
     .checkbox-custom:checked::after {
         content: '✓';
         position: absolute;
@@ -99,7 +99,7 @@
         font-size: 0.75rem;
         font-weight: bold;
     }
-    
+
     .delay-100 { animation-delay: 0.1s; }
     .delay-200 { animation-delay: 0.2s; }
     .delay-300 { animation-delay: 0.3s; }
@@ -161,9 +161,9 @@
             <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
                 📧 Email
             </label>
-            <input type="email" 
-                   id="email" 
-                   name="email" 
+            <input type="email"
+                   id="email"
+                   name="email"
                    value="{{ old('email') }}"
                    required
                    class="input-glow w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('email') border-red-300 @enderror"
@@ -180,14 +180,14 @@
                 🔒 Password
             </label>
             <div class="relative">
-                <input type="password" 
-                       id="password" 
-                       name="password" 
+                <input type="password"
+                       id="password"
+                       name="password"
                        required
                        class="input-glow w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('password') border-red-300 @enderror"
                        placeholder="Masukkan password Anda"
                        autocomplete="current-password">
-                <button type="button" 
+                <button type="button"
                         onclick="togglePassword()"
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors">
                     <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,16 +204,16 @@
         {{-- Remember Me --}}
         <div class="flex items-center justify-between animate-fadeInUp delay-500">
             <div class="flex items-center">
-                <input type="checkbox" 
-                       id="remember" 
-                       name="remember" 
+                <input type="checkbox"
+                       id="remember"
+                       name="remember"
                        {{ old('remember') ? 'checked' : '' }}
                        class="checkbox-custom mr-3">
                 <label for="remember" class="text-sm text-gray-600 select-none cursor-pointer">
                     Ingat saya
                 </label>
             </div>
-            <a href="{{ route('password.request') }}" 
+            <a href="{{ route('password.request') }}"
                class="text-sm text-blue-600 hover:text-blue-500 font-medium transition-colors">
                 Lupa Password?
             </a>
@@ -221,7 +221,7 @@
 
         {{-- Submit Button --}}
         <div class="animate-fadeInUp delay-600">
-            <button type="submit" 
+            <button type="submit"
                     class="btn-glow w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     id="submitBtn">
                 🚀 Masuk Sekarang
@@ -254,7 +254,7 @@
     function togglePassword() {
         const passwordField = document.getElementById('password');
         const eyeIcon = document.getElementById('eyeIcon');
-        
+
         if (passwordField.type === 'password') {
             passwordField.type = 'text';
             eyeIcon.innerHTML = `
@@ -274,15 +274,15 @@
         const submitBtn = document.getElementById('submitBtn');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const originalText = submitBtn.innerHTML;
-        
+
         // Show loading state
         submitBtn.innerHTML = '⏳ Memproses...';
         submitBtn.disabled = true;
         loadingOverlay.classList.remove('hidden');
-        
+
         // Note: In real Laravel app, form will submit normally
         // This is just for demo purposes
-        
+
         // Remove loading state after a delay (for demo)
         setTimeout(() => {
             submitBtn.innerHTML = originalText;

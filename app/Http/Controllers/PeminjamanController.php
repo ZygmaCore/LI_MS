@@ -16,7 +16,7 @@ class PeminjamanController extends Controller
     public function index()
     {
         $peminjamans = Peminjaman::with(['user', 'barang'])->latest()->get();
-        return view('peminjamans.index', compact('peminjamans'));
+        return view('peminjaman.index', compact('peminjamans'));
     }
 
     /**
@@ -26,7 +26,7 @@ class PeminjamanController extends Controller
     {
         $users = User::all();
         $barangs = Barang::all();
-        return view('peminjamans.create', compact('users', 'barangs'));
+        return view('peminjaman.create', compact('users', 'barangs'));
     }
 
     /**
@@ -61,7 +61,7 @@ class PeminjamanController extends Controller
     {
         $users = User::all();
         $barangs = Barang::all();
-        return view('peminjamans.edit', compact('peminjaman', 'users', 'barangs'));
+        return view('peminjaman.edit', compact('peminjaman', 'users', 'barangs'));
     }
 
     /**
@@ -110,6 +110,6 @@ class PeminjamanController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
-        return view('peminjamans.riwayat', compact('riwayat'));
+        return view('peminjaman.riwayat', compact('riwayat'));
     }
 }

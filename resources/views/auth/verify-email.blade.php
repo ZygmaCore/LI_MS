@@ -137,6 +137,7 @@
     </div>
 
     <!-- Action Buttons -->
+    <!-- Action Buttons -->
     <div class="space-y-4 animate-fadeInUp delay-400">
         <!-- Resend Email Form -->
         <form action="{{ route('verification.send') }}" method="POST">
@@ -147,12 +148,23 @@
             </button>
         </form>
 
-        <!-- Back to Login -->
-        <a href="{{ route('login') }}"
-           class="block w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
-            ← Kembali ke Login
-        </a>
+        <!-- Back to Login / Logout -->
+        @guest
+            <a href="{{ route('login') }}"
+               class="block w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
+                ← Kembali ke Login
+            </a>
+        @else
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                        class="block w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
+                    ← Logout & Kembali ke Login
+                </button>
+            </form>
+        @endguest
     </div>
+
 
     <!-- Help Section -->
     <div class="mt-8 p-4 bg-amber-50 rounded-xl border border-amber-200 animate-fadeInUp delay-500">

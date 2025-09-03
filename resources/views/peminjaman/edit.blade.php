@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow">
-    <form method="POST" action="{{ route('peminjaman.update', $peminjaman) }}" class="space-y-4">
+    <form method="POST" action="{{ route('peminjamans.update', $peminjaman) }}" class="space-y-4">
         @csrf @method('PUT')
 
         <div>
@@ -32,13 +32,13 @@
 
         <div>
             <label class="block mb-1">Jumlah</label>
-            <input type="number" name="jumlah" class="w-full border rounded p-2" 
+            <input type="number" name="jumlah" class="w-full border rounded p-2"
                    value="{{ $peminjaman->jumlah }}" required>
         </div>
 
         <div>
             <label class="block mb-1">Tanggal Pinjam</label>
-            <input type="date" name="tanggal_pinjam" class="w-full border rounded p-2" 
+            <input type="date" name="tanggal_pinjam" class="w-full border rounded p-2"
                    value="{{ $peminjaman->tanggal_pinjam->format('Y-m-d') }}" required>
         </div>
 

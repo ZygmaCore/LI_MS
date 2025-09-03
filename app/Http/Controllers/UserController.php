@@ -39,12 +39,19 @@ class UserController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+
+        // Tandai email terverifikasi untuk semua user yang dibuat oleh admin
+        $validated['email_verified_at'] = now();
+
         $user = User::create($validated);
 
-        event(new Registered($user));
+        // Tidak perlu kirim email verifikasi karena sudah verified
+        // Jika ingin tetap kirim notifikasi kredensial, tambahkan mailer terpisah di sini.
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
     }
+
+
 
     /**
      * Form edit user.
