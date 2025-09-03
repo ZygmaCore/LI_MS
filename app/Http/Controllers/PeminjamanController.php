@@ -110,6 +110,46 @@ class PeminjamanController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
-        return view('peminjaman.riwayat', compact('riwayat'));
+        return view('siswa.riwayat', compact('riwayat'));
+    }
+
+    /**
+     * Daftar barang untuk siswa meminjam.
+     */
+    public function listBarang()
+    {
+        $barangs = Barang::orderBy('nama_barang')
+            ->get();
+        return view('siswa.barangs', compact('barangs'));
+    }
+
+    /**
+     * Aksi siswa meminjam barang tertentu.
+     */
+    public function pinjam(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'jumlah' => 'required|integer|min:1',
+        ]);
+
+        $barang = Barang::findOrFail($id);
+
+        if ($barang->jumlah_total < $validated['jumlah']) {
+            return back()->withErrors(['jumlah' => 'Stok barang tidak mencukupi'])->withInput();
+        }
+
+        // Kurangi stok dan catat peminjaman
+        $barang->decrement('jumlah_total', $validated['jumlah']);
+
+        Peminjaman::create([
+            'user_id' => Auth::id(),
+            'barang_id' => $barang->id,
+            'jumlah' => $validated['jumlah'],
+            'tanggal_pinjam' => now()->toDateString(),
+            'tanggal_kembali' => null,
+            'status' => 'dipinjam',
+        ]);
+
+        return redirect(url('/siswa/riwayat'))->with('success', 'Peminjaman berhasil dibuat.');
     }
 }
