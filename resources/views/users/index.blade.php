@@ -1,46 +1,61 @@
 @extends('layouts.app')
 
-@section('title', 'User Management')
-@section('page-title', 'User Management')
+@section('title', 'Daftar User')
+@section('page-title', 'Daftar User')
 
 @section('content')
-<div class="container">
-    <h2 class="mb-4">Daftar User</h2>
-
-    <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">+ Tambah User</a>
+<div class="bg-white p-6 rounded-lg shadow">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Manajemen User</h2>
+        <a href="{{ route('users.create') }}" 
+           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+           + Tambah User
+        </a>
+    </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="mb-4 rounded bg-green-50 text-green-800 px-4 py-3">
+            {{ session('success') }}
+        </div>
     @endif
 
-    <table class="table table-bordered table-striped">
+    <table class="w-full border-collapse">
         <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Aksi</th>
+            <tr class="bg-gray-100 text-left">
+                <th class="p-2">#</th>
+                <th class="p-2">Nama</th>
+                <th class="p-2">Email</th>
+                <th class="p-2">Role</th>
+                <th class="p-2">Aksi</th>
             </tr>
         </thead>
         <tbody>
-        @forelse($users as $user)
-            <tr>
-                <td>{{ $user->nama }}</td>
-                <td>{{ $user->email }}</td>
-                <td><span class="badge bg-info">{{ ucfirst($user->role) }}</span></td>
-                <td>
-                    <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-success">Detail</a>
-                    <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('users.destroy', $user) }}" method="POST" style="display:inline-block;">
+            @forelse($users as $u)
+            <tr class="border-b">
+                <td class="p-2">{{ $u->id }}</td>
+                <td class="p-2">{{ $u->nama }}</td>
+                <td class="p-2">{{ $u->email }}</td>
+                <td class="p-2 capitalize">{{ $u->role }}</td>
+                <td class="p-2 flex gap-2">
+                    <a href="{{ route('users.edit', $u) }}" 
+                       class="text-blue-600 hover:underline">Edit</a>
+                    <form action="{{ route('users.destroy', $u) }}" method="POST"
+                          onsubmit="return confirm('Yakin hapus user ini?')">
                         @csrf @method('DELETE')
-                        <button onclick="return confirm('Yakin hapus user ini?')" class="btn btn-sm btn-danger">Hapus</button>
+                        <button type="submit" class="text-red-600 hover:underline">Hapus</button>
                     </form>
                 </td>
             </tr>
-        @empty
-            <tr><td colspan="4">Belum ada user</td></tr>
-        @endforelse
+            @empty
+            <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">Belum ada user</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
+
+    <div class="mt-4">
+        {{ $users->links() }}
+    </div>
 </div>
 @endsection
