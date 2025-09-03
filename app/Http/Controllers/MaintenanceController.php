@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Maintenance;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
 class MaintenanceController extends Controller
@@ -12,8 +13,17 @@ class MaintenanceController extends Controller
      */
     public function index()
     {
-        $maintenances = Maintenance::with('barang')->get();
-        return response()->json($maintenances);
+        $maintenances = Maintenance::with('barang')->latest()->get();
+        return view('maintenance.index', compact('maintenances'));
+    }
+
+    /**
+     * Form tambah maintenance.
+     */
+    public function create()
+    {
+        $barangs = Barang::all();
+        return view('maintenance.create', compact('barangs'));
     }
 
     /**
@@ -29,17 +39,18 @@ class MaintenanceController extends Controller
             'catatan'             => 'nullable|string',
         ]);
 
-        $maintenance = Maintenance::create($validated);
+        Maintenance::create($validated);
 
-        return response()->json($maintenance, 201);
+        return redirect()->route('maintenances.index')->with('success', 'Data maintenance berhasil ditambahkan.');
     }
 
     /**
-     * Tampilkan detail maintenance.
+     * Form edit maintenance.
      */
-    public function show(Maintenance $maintenance)
+    public function edit(Maintenance $maintenance)
     {
-        return response()->json($maintenance->load('barang'));
+        $barangs = Barang::all();
+        return view('maintenance.edit', compact('maintenance', 'barangs'));
     }
 
     /**
@@ -48,16 +59,16 @@ class MaintenanceController extends Controller
     public function update(Request $request, Maintenance $maintenance)
     {
         $validated = $request->validate([
-            'barang_id'           => 'sometimes|required|exists:barangs,id',
-            'deskripsi_kerusakan' => 'sometimes|required|string',
-            'tanggal_maintenance' => 'sometimes|required|date',
-            'status'              => 'sometimes|required|in:sedang_diperbaiki,selesai',
+            'barang_id'           => 'required|exists:barangs,id',
+            'deskripsi_kerusakan' => 'required|string',
+            'tanggal_maintenance' => 'required|date',
+            'status'              => 'required|in:sedang_diperbaiki,selesai',
             'catatan'             => 'nullable|string',
         ]);
 
         $maintenance->update($validated);
 
-        return response()->json($maintenance);
+        return redirect()->route('maintenances.index')->with('success', 'Data maintenance berhasil diperbarui.');
     }
 
     /**
@@ -66,6 +77,6 @@ class MaintenanceController extends Controller
     public function destroy(Maintenance $maintenance)
     {
         $maintenance->delete();
-        return response()->json(null, 204);
+        return redirect()->route('maintenances.index')->with('success', 'Data maintenance berhasil dihapus.');
     }
 }
