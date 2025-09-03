@@ -13,6 +13,12 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="mb-4 rounded bg-green-50 text-green-800 px-4 py-3">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <table class="w-full border-collapse">
         <thead>
             <tr class="bg-gray-100 text-left">
@@ -24,15 +30,30 @@
             </tr>
         </thead>
         <tbody>
+            @forelse($maintenances as $m)
             <tr class="border-b">
-                <td class="p-2">1</td>
-                <td class="p-2">Proyektor</td>
-                <td class="p-2">2025-08-25</td>
-                <td class="p-2 text-yellow-600">Sedang diperbaiki</td>
-                <td class="p-2">
-                    <a href="{{ route('maintenance.edit', 1) }}" class="text-blue-600 hover:underline">Edit</a>
+                <td class="p-2">{{ $m->id }}</td>
+                <td class="p-2">{{ $m->barang->nama_lab ?? '-' }}</td>
+                <td class="p-2">{{ $m->tanggal }}</td>
+                <td class="p-2 
+                    {{ $m->status == 'selesai' ? 'text-green-600' : 'text-yellow-600' }}">
+                    {{ ucfirst($m->status) }}
+                </td>
+                <td class="p-2 flex gap-2">
+                    <a href="{{ route('maintenance.edit', $m) }}" 
+                       class="text-blue-600 hover:underline">Edit</a>
+                    <form action="{{ route('maintenance.destroy', $m) }}" method="POST"
+                          onsubmit="return confirm('Yakin hapus data ini?')">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                    </form>
                 </td>
             </tr>
+            @empty
+            <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">Belum ada data maintenance</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

@@ -55,9 +55,15 @@ Route::get('/register/verify/{token}', function(string $token) {
 // -------------------------
 // Dashboard
 // -------------------------
-Route::get('/dashboard', fn() => view('dashboard'))
-    ->middleware(['auth', 'verified', 'nocache'])
-    ->name('dashboard');
+Route::middleware(['auth', 'verified', 'nocache'])->group(function () {
+    Route::get('/dashboard/admin', fn() => view('dashboard.admin'))->name('dashboard.admin');
+    Route::get('/dashboard/guru', fn() => view('dashboard.guru'))->name('dashboard.guru');
+    Route::get('/dashboard/siswa', fn() => view('dashboard.siswa'))->name('dashboard.siswa');
+
+    // default dashboard (kalau perlu)
+    Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+});
+
 
 // -------------------------
 // Email Verification
