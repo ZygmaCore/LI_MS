@@ -7,7 +7,7 @@
 <div class="bg-white p-6 rounded-lg shadow">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Data Peminjaman</h2>
-        <a href="{{ route('peminjamans.create') }}" 
+        <a href="{{ route('peminjaman.create') }}" 
            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
            + Tambah Peminjaman
         </a>
@@ -43,7 +43,7 @@
                 <td class="p-2">{{ $p->tanggal_kembali ?? '-' }}</td>
                 <td class="p-2">{{ ucfirst($p->status) }}</td>
                 <td class="p-2 flex gap-2">
-                    <a href="{{ route('peminjamans.edit', $p) }}" 
+                    <a href="{{ route('peminjaman.edit', $p) }}" 
                        class="text-blue-600 hover:underline">Edit</a>
                     <form action="{{ route('peminjamans.destroy', $p) }}" method="POST" 
                           onsubmit="return confirm('Yakin hapus data ini?')">

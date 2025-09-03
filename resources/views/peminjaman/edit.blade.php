@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow">
-    <form method="POST" action="{{ route('peminjamans.update', $peminjaman) }}" class="space-y-4">
+    <form method="POST" action="{{ route('peminjaman.update', $peminjaman) }}" class="space-y-4">
         @csrf @method('PUT')
 
         <div>
