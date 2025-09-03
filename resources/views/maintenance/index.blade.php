@@ -7,7 +7,7 @@
 <div class="bg-white p-6 rounded-lg shadow">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Maintenance Barang</h2>
-        <a href="{{ route('maintenances.create') }}" 
+        <a href="{{ route('maintenances.create') }}"
            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
            + Tambah Maintenance
         </a>
@@ -39,7 +39,7 @@
                     {{ ucfirst(str_replace('_',' ',$m->status)) }}
                 </td>
                 <td class="p-2 flex gap-2">
-                    <a href="{{ route('maintenances.edit', $m) }}" 
+                    <a href="{{ route('maintenances.edit', $m) }}"
                        class="text-blue-600 hover:underline">Edit</a>
                     <form action="{{ route('maintenances.destroy', $m) }}" method="POST"
                           onsubmit="return confirm('Yakin hapus data ini?')">
