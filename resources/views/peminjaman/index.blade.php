@@ -7,7 +7,7 @@
 <div class="bg-white p-6 rounded-lg shadow">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Data Peminjaman</h2>
-        <a href="{{ route('peminjaman.create') }}" 
+        <a href="{{ route('peminjamans.create') }}" 
            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
            + Tambah Peminjaman
         </a>
@@ -33,7 +33,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($peminjaman as $p)
+            @forelse($peminjamans as $p)
             <tr class="border-b">
                 <td class="p-2">{{ $p->id }}</td>
                 <td class="p-2">{{ $p->user->nama ?? '-' }}</td>
@@ -41,18 +41,11 @@
                 <td class="p-2">{{ $p->jumlah }}</td>
                 <td class="p-2">{{ $p->tanggal_pinjam }}</td>
                 <td class="p-2">{{ $p->tanggal_kembali ?? '-' }}</td>
-                <td class="p-2">
-                    <span class="
-                        @if($p->status == 'dipinjam') text-yellow-600 
-                        @elseif($p->status == 'dikembalikan') text-green-600 
-                        @else text-red-600 @endif">
-                        {{ ucfirst($p->status) }}
-                    </span>
-                </td>
+                <td class="p-2">{{ ucfirst($p->status) }}</td>
                 <td class="p-2 flex gap-2">
-                    <a href="{{ route('peminjaman.edit', $p) }}" 
+                    <a href="{{ route('peminjamans.edit', $p) }}" 
                        class="text-blue-600 hover:underline">Edit</a>
-                    <form action="{{ route('peminjaman.destroy', $p) }}" method="POST"
+                    <form action="{{ route('peminjamans.destroy', $p) }}" method="POST" 
                           onsubmit="return confirm('Yakin hapus data ini?')">
                         @csrf @method('DELETE')
                         <button type="submit" class="text-red-600 hover:underline">Hapus</button>

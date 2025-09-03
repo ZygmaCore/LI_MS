@@ -5,41 +5,50 @@
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow">
-    <form action="{{ route('peminjaman.update', $peminjaman) }}" method="POST">
-        @csrf
-        @method('PUT')
+    <form method="POST" action="{{ route('peminjamans.update', $peminjaman) }}" class="space-y-4">
+        @csrf @method('PUT')
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">User</label>
-            <input type="text" class="w-full border rounded p-2 bg-gray-100" 
-                   value="{{ $peminjaman->user->nama }}" disabled>
+            <select name="user_id" class="w-full border rounded p-2">
+                @foreach($users as $u)
+                    <option value="{{ $u->id }}" {{ $peminjaman->user_id == $u->id ? 'selected' : '' }}>
+                        {{ $u->nama }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Barang</label>
-            <input type="text" class="w-full border rounded p-2 bg-gray-100" 
-                   value="{{ $peminjaman->barang->nama_barang }}" disabled>
+            <select name="barang_id" class="w-full border rounded p-2">
+                @foreach($barangs as $b)
+                    <option value="{{ $b->id }}" {{ $peminjaman->barang_id == $b->id ? 'selected' : '' }}>
+                        {{ $b->nama_barang }} (stok: {{ $b->jumlah_total }})
+                    </option>
+                @endforeach
+            </select>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Jumlah</label>
-            <input type="number" name="jumlah" min="1" 
-                   value="{{ $peminjaman->jumlah }}" class="w-full border rounded p-2">
+            <input type="number" name="jumlah" class="w-full border rounded p-2" 
+                   value="{{ $peminjaman->jumlah }}" required>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Tanggal Pinjam</label>
-            <input type="date" value="{{ $peminjaman->tanggal_pinjam }}" 
-                   class="w-full border rounded p-2 bg-gray-100" disabled>
+            <input type="date" name="tanggal_pinjam" class="w-full border rounded p-2" 
+                   value="{{ $peminjaman->tanggal_pinjam->format('Y-m-d') }}" required>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Tanggal Kembali</label>
-            <input type="date" name="tanggal_kembali" 
-                   value="{{ $peminjaman->tanggal_kembali }}" class="w-full border rounded p-2">
+            <input type="date" name="tanggal_kembali" class="w-full border rounded p-2"
+                   value="{{ $peminjaman->tanggal_kembali ? $peminjaman->tanggal_kembali->format('Y-m-d') : '' }}">
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Status</label>
             <select name="status" class="w-full border rounded p-2">
                 <option value="dipinjam" {{ $peminjaman->status == 'dipinjam' ? 'selected' : '' }}>Dipinjam</option>
@@ -48,8 +57,9 @@
             </select>
         </div>
 
-        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update</button>
-        <a href="{{ route('peminjaman.index') }}" class="ml-2 text-gray-600">Batal</a>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Update
+        </button>
     </form>
 </div>
 @endsection

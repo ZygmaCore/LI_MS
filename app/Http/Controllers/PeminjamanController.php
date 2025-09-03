@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
 use App\Models\Barang;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,12 +15,22 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        $peminjaman = Peminjaman::with(['user', 'barang'])->get();
-        return response()->json($peminjaman);
+        $peminjamans = Peminjaman::with(['user', 'barang'])->latest()->get();
+        return view('peminjamans.index', compact('peminjamans'));
     }
 
     /**
-     * Simpan peminjaman baru (umumnya dari admin/guru).
+     * Form create peminjaman.
+     */
+    public function create()
+    {
+        $users = User::all();
+        $barangs = Barang::all();
+        return view('peminjamans.create', compact('users', 'barangs'));
+    }
+
+    /**
+     * Simpan peminjaman baru.
      */
     public function store(Request $request)
     {
@@ -29,50 +40,51 @@ class PeminjamanController extends Controller
             'jumlah' => 'required|integer|min:1',
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'nullable|date',
-            'status' => 'in:dipinjam,dikembalikan,rusak',
+            'status' => 'required|in:dipinjam,dikembalikan,rusak',
         ]);
 
-        // Validasi stok barangs
         $barang = Barang::findOrFail($validated['barang_id']);
         if ($barang->jumlah_total < $validated['jumlah']) {
-            return response()->json(['message' => 'Stok barangs tidak mencukupi'], 400);
+            return back()->withErrors(['jumlah' => 'Stok barang tidak mencukupi'])->withInput();
         }
 
-        // Kurangi stok barangs
         $barang->decrement('jumlah_total', $validated['jumlah']);
+        Peminjaman::create($validated);
 
-        $peminjaman = Peminjaman::create($validated);
-
-        return response()->json($peminjaman, 201);
+        return redirect()->route('peminjamans.index')->with('success', 'Peminjaman berhasil ditambahkan.');
     }
 
     /**
-     * Tampilkan detail peminjaman.
+     * Form edit peminjaman.
      */
-    public function show(Peminjaman $peminjaman)
+    public function edit(Peminjaman $peminjaman)
     {
-        return response()->json($peminjaman->load(['user','barang']));
+        $users = User::all();
+        $barangs = Barang::all();
+        return view('peminjamans.edit', compact('peminjaman', 'users', 'barangs'));
     }
 
     /**
-     * Update peminjaman (misal status jadi dikembalikan/rusak).
+     * Update peminjaman.
      */
     public function update(Request $request, Peminjaman $peminjaman)
     {
         $validated = $request->validate([
-            'jumlah' => 'sometimes|required|integer|min:1',
+            'user_id' => 'required|exists:users,id',
+            'barang_id' => 'required|exists:barangs,id',
+            'jumlah' => 'required|integer|min:1',
+            'tanggal_pinjam' => 'required|date',
             'tanggal_kembali' => 'nullable|date',
-            'status' => 'in:dipinjam,dikembalikan,rusak',
+            'status' => 'required|in:dipinjam,dikembalikan,rusak',
         ]);
 
-        // Kalau status jadi dikembalikan → tambah stok barangs
-        if (isset($validated['status']) && $validated['status'] === 'dikembalikan') {
+        if ($validated['status'] === 'dikembalikan' && $peminjaman->status !== 'dikembalikan') {
             $peminjaman->barang->increment('jumlah_total', $peminjaman->jumlah);
         }
 
         $peminjaman->update($validated);
 
-        return response()->json($peminjaman);
+        return redirect()->route('peminjamans.index')->with('success', 'Peminjaman berhasil diperbarui.');
     }
 
     /**
@@ -80,54 +92,17 @@ class PeminjamanController extends Controller
      */
     public function destroy(Peminjaman $peminjaman)
     {
-        $peminjaman->delete();
-        return response()->json(null, 204);
-    }
-
-    /* =======================
-       ========== SISWA =======
-       ======================= */
-
-    /**
-     * List barangs untuk siswa (lihat stok tersedia).
-     */
-    public function listBarang()
-    {
-        $barangs = Barang::all(['id','nama_barang','kode_barang','jumlah_total']);
-        return response()->json($barangs);
-    }
-
-    /**
-     * Proses siswa meminjam barangs.
-     */
-    public function pinjam(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'jumlah' => 'required|integer|min:1',
-        ]);
-
-        $barang = Barang::findOrFail($id);
-
-        if ($barang->jumlah_total < $validated['jumlah']) {
-            return response()->json(['message' => 'Stok barangs tidak mencukupi'], 400);
+        if ($peminjaman->status === 'dipinjam') {
+            $peminjaman->barang->increment('jumlah_total', $peminjaman->jumlah);
         }
 
-        // Kurangi stok barangs
-        $barang->decrement('jumlah_total', $validated['jumlah']);
+        $peminjaman->delete();
 
-        $peminjaman = Peminjaman::create([
-            'user_id' => Auth::id(),
-            'barang_id' => $barang->id,
-            'jumlah' => $validated['jumlah'],
-            'tanggal_pinjam' => now(),
-            'status' => 'dipinjam',
-        ]);
-
-        return response()->json($peminjaman, 201);
+        return redirect()->route('peminjamans.index')->with('success', 'Peminjaman berhasil dihapus.');
     }
 
     /**
-     * Riwayat peminjaman siswa.
+     * Riwayat peminjaman siswa (hanya untuk user login).
      */
     public function riwayat()
     {
@@ -135,6 +110,6 @@ class PeminjamanController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
-        return response()->json($riwayat);
+        return view('peminjamans.riwayat', compact('riwayat'));
     }
 }

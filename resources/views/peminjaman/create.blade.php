@@ -5,44 +5,43 @@
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow">
-    <form action="{{ route('peminjaman.store') }}" method="POST">
+    <form method="POST" action="{{ route('peminjamans.store') }}" class="space-y-4">
         @csrf
-        <div class="mb-3">
+
+        <div>
             <label class="block mb-1">User</label>
-            <select name="user_id" class="w-full border rounded p-2" required>
-                <option value="">-- Pilih User --</option>
+            <select name="user_id" class="w-full border rounded p-2">
                 @foreach($users as $u)
-                    <option value="{{ $u->id }}">{{ $u->nama }} ({{ $u->email }})</option>
+                    <option value="{{ $u->id }}">{{ $u->nama }}</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Barang</label>
-            <select name="barang_id" class="w-full border rounded p-2" required>
-                <option value="">-- Pilih Barang --</option>
+            <select name="barang_id" class="w-full border rounded p-2">
                 @foreach($barangs as $b)
-                    <option value="{{ $b->id }}">{{ $b->nama_barang }} (Stok: {{ $b->jumlah_total }})</option>
+                    <option value="{{ $b->id }}">{{ $b->nama_barang }} (stok: {{ $b->jumlah_total }})</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Jumlah</label>
-            <input type="number" name="jumlah" min="1" class="w-full border rounded p-2" required>
+            <input type="number" name="jumlah" class="w-full border rounded p-2" required>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Tanggal Pinjam</label>
             <input type="date" name="tanggal_pinjam" class="w-full border rounded p-2" required>
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Tanggal Kembali</label>
             <input type="date" name="tanggal_kembali" class="w-full border rounded p-2">
         </div>
 
-        <div class="mb-3">
+        <div>
             <label class="block mb-1">Status</label>
             <select name="status" class="w-full border rounded p-2">
                 <option value="dipinjam">Dipinjam</option>
@@ -51,8 +50,9 @@
             </select>
         </div>
 
-        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan</button>
-        <a href="{{ route('peminjaman.index') }}" class="ml-2 text-gray-600">Batal</a>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Simpan
+        </button>
     </form>
 </div>
 @endsection
